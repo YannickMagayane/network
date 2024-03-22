@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import User, Fichier, IntrusionDetectionLog
 
-# Register your models here.
+admin.site.register(User)
+admin.site.register(Fichier)
+admin.site.register(IntrusionDetectionLog)

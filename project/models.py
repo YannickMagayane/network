@@ -83,7 +83,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Fichier(models.Model):
     nom_du_fichier = models.CharField(max_length=50)
     fichier = models.FileField(upload_to='fichiers/')  # Champ pour stocker le fichier envoyé
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.nom_du_fichier
@@ -111,7 +111,7 @@ class IntrusionDetectionLog(models.Model):
         return None, None
 
     @classmethod
-    def capture_packets(cls):
+    def capture_packets(cls, **kwargs):
         packets = sniff(count=100)
         for packet in packets:
             intrusion_type, description = cls.detect_intrusion(packet)
@@ -189,4 +189,4 @@ class IntrusionDetectionLog(models.Model):
         return False
 
 # Déclenche la capture de paquets lors de la création d'un nouveau log
-models.signals.post_save.connect(IntrusionDetectionLog.capture_packets, sender=IntrusionDetectionLog)
+models.signals.post_save.connect(IntrusionDetectionLog.capture_packets, sender=IntrusionDetectionLog, weak=False)
